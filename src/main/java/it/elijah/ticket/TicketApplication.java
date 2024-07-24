@@ -1,4 +1,4 @@
-package it.elijah.ticket.ticket;
+package it.elijah.ticket;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

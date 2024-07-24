@@ -1,4 +1,4 @@
-package it.elijah.ticket.ticket.model;
+package it.elijah.ticket.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,16 +9,15 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
-@Table(name="category")
-public class Category {
-
+@Table(name="roles")
+public class Roles {
   @Id
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   private Integer id;
 
   @NotBlank
-  @Column(name="category", nullable=false)
-  private String category;
+  @Column(name="name", nullable=false, unique=true)
+  private String name;
 
   public Integer getId() {
     return id;
@@ -28,12 +27,11 @@ public class Category {
     this.id = id;
   }
 
-  public String getCategory() {
-    return category;
+  public String getName() {
+    return name;
   }
 
-  public void setCategory(String category) {
-    this.category = category;
+  public void setName(String name) {
+    this.name = name;
   }
-
 }

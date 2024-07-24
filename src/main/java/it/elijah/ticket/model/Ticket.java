@@ -1,4 +1,4 @@
-package it.elijah.ticket.ticket.model;
+package it.elijah.ticket.model;
 
 import java.util.List;
 
