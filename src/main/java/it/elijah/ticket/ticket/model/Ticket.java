@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -34,18 +35,22 @@ public class Ticket {
   private Boolean deleted;
 
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name="id_user", nullable=false)
+  @JoinColumn(name="user_id", nullable=false)
   private User user;
 
   @OneToMany(fetch = FetchType.EAGER)
-  @JoinColumn(name="id_ticket", nullable=false)
+  @JoinColumn(name="ticket_id", nullable=false)
   private List<Note> note;
 
+  @ManyToMany(fetch = FetchType.EAGER)
+  private List<Category> category;
+
+  
   
   public Integer getId() {
     return id;
   }
-
+  
   public void setId(Integer id) {
     this.id = id;
   }
@@ -57,11 +62,11 @@ public class Ticket {
   public void setText(String text) {
     this.text = text;
   }
-
+  
   public Integer getState() {
     return state;
   }
-
+  
   public void setState(Integer state) {
     this.state = state;
   }
@@ -73,7 +78,7 @@ public class Ticket {
   public void setDeleted(Boolean deleted) {
     this.deleted = deleted;
   }
-
+  
   public User getUser() {
     return user;
   }
@@ -88,5 +93,13 @@ public class Ticket {
   
   public void setNote(List<Note> note) {
     this.note = note;
+  }
+
+  public List<Category> getCategory() {
+    return category;
+  }
+  
+  public void setCategory(List<Category> category) {
+    this.category = category;
   }
 }
