@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>it.elijah.ticket</groupId>
-	<artifactId>ticket</artifactId>
+	<artifactId>ticket-platform</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>ticket</name>
-	<description>Demo project for Spring Boot</description>
+	<name>ticket-platform</name>
+	<description>End-of-course milestone in Boolean class BEPT 1, a simple task system similar to trello and the like</description>
 	<url/>
 	<licenses>
 		<license/>
