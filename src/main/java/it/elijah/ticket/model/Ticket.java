@@ -22,7 +22,11 @@ public class Ticket {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+  private Integer id; 
+
+  @NotBlank
+  @Column(name="title", nullable=false)
+  private String title;
 
   @NotBlank
   @Column(name="text", nullable=false)
@@ -55,6 +59,14 @@ public class Ticket {
     this.id = id;
   }
   
+  public String getTitle() {
+    return title;
+  }
+  
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
   public String getText() {
     return text;
   }

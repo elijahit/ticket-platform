@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th='http://www.thymeleaf.org'>
+
+<head>
+  <title>Template</title>
+  <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' media='all' href='../../css/gtvg.css' th:href='@{/css/gtvg.css}' />
+</head>
+
+<body>
+  <th:block th:if="${ticket.isEmpty()}">
+    <p>La lista è vuota</p>
+  </th:block>
+  <th:block th:unless="${ticket.isEmpty()}">
+    <p>La lista è piena</p>
+  </th:block>
+</body>
+
+</html>
