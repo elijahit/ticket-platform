@@ -2,6 +2,8 @@ package it.elijah.ticket.model;
 
 import java.time.LocalDate;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -22,17 +24,22 @@ public class Note {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotBlank
+    @NotBlank(message="Devi compilare questo campo.")
     @Column(name = "text", nullable = false)
     private String text;
 
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     @NotNull
     @Column(name = "created_at", nullable = false)
     private LocalDate createdAt;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="ticket_id", nullable=false)
+    private Ticket ticket;
 
     public User getUser() {
       return user;
@@ -65,4 +72,12 @@ public class Note {
     public void setCreatedAt(LocalDate createdAt) {
         this.createdAt = createdAt;
     }
+
+    public Ticket getTicket() {
+        return ticket;
+      }
+  
+      public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
+      }
 }

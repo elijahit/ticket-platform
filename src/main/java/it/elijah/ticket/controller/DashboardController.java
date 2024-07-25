@@ -1,5 +1,6 @@
 package it.elijah.ticket.controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import it.elijah.ticket.model.Note;
 import it.elijah.ticket.model.Ticket;
 import it.elijah.ticket.repository.TicketRepository;
 
@@ -40,6 +42,10 @@ public class DashboardController {
     @GetMapping("/ticket/{id}")
     public String getTask(@PathVariable("id") Integer id, Model model) {
         model.addAttribute("ticket", ticketRepository.findById(id).get());
+        Note note = new Note();
+        note.setTicket(ticketRepository.findById(id).get());
+        note.setCreatedAt(LocalDate.now());
+        model.addAttribute("note", note);
 
         return "/dashboard/ticket";
     }

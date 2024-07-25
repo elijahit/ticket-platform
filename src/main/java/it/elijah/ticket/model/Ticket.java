@@ -43,7 +43,7 @@ public class Ticket {
   private User user;
 
   @OneToMany(fetch = FetchType.EAGER)
-  @JoinColumn(name="ticket_id", nullable=false)
+  @JoinColumn(name="ticket_id", nullable=false, insertable=false, updatable=false)
   private List<Note> note;
 
   @ManyToMany(fetch = FetchType.EAGER)

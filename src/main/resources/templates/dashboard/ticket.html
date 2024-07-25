@@ -13,6 +13,29 @@
 <body>
   <div class="container">
     <h1 class="fs-3 text-center" th:text="${ticket.title}"></h1>
+    <p th:text="|${ticket.title} - ${ticket.text}|"></p>
+    <form class="mt-5 needs-validation" th:action="@{|/note/create|}" th:object="${note}" method="post">
+      <th:block th:if="${#fields.hasAnyErrors()}">
+        <ul>
+          <li th:each="err : ${#fields.allErrors()}" th:text="${err}" class="text-danger">
+          </li>
+        </ul>
+      </th:block>
+      <div class="form-floating">
+        <textarea th:field="*{text}" class="form-control mb-4" placeholder="Leave a comment here" id="text" style="height: 100px"></textarea>
+        <label for="text">Note</label>
+      </div>
+      <input type="hidden" th:field="*{ticket}" id="ticket">
+      <input type="hidden" th:field="*{createdAt}" id="createdAt">
+      <button type="submit" class="btn btn-primary">Aggiungi nota</button>
+    </form>
+    <th:block th:if="${ticket.note.size() > 0}">
+      <div class="d-flex gap-3" th:each="n : ${ticket.note}">
+        <p th:text="${n.text}"></p>
+        <p th:text="${n.user.getUsername()}"></p>
+        <p th:text="${#temporals.format(n.createdAt, 'dd-MM-yyyy')}"></p>
+      </div>
+    </th:block>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
