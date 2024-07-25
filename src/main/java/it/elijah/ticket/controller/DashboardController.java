@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import it.elijah.ticket.model.Note;
 import it.elijah.ticket.model.Ticket;
 import it.elijah.ticket.model.User;
+import it.elijah.ticket.repository.CategoryRepository;
 import it.elijah.ticket.repository.TicketRepository;
 import it.elijah.ticket.repository.UserRepository;
 
@@ -29,6 +30,9 @@ public class DashboardController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    CategoryRepository categoryRepository;
 
     @GetMapping()
     public String getIndex(Model model, @RequestParam(name = "search", required = false) String search) {
@@ -61,7 +65,8 @@ public class DashboardController {
     public String getTask(Model model, Principal principal) {
         Ticket ticket = new Ticket();
         Optional<User> user = userRepository.findByUsername(principal.getName());
-        // DA INSERIRE IL MODELLO LIST PER RECUPERARE TUTTI GLI OPERATORI
+        model.addAttribute("allOperators", userRepository.findAll());
+        model.addAttribute("categories", categoryRepository.findAll());
         ticket.setUser(user.get());
         ticket.setState(0);
         model.addAttribute("ticket", ticket);
