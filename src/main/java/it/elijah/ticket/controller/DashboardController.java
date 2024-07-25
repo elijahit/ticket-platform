@@ -1,8 +1,10 @@
 package it.elijah.ticket.controller;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import it.elijah.ticket.model.Note;
 import it.elijah.ticket.model.Ticket;
+import it.elijah.ticket.model.User;
 import it.elijah.ticket.repository.TicketRepository;
+import it.elijah.ticket.repository.UserRepository;
 
 @Controller
 @RequestMapping("/dashboard")
@@ -22,6 +26,9 @@ public class DashboardController {
 
     @Autowired
     TicketRepository ticketRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     @GetMapping()
     public String getIndex(Model model, @RequestParam(name = "search", required = false) String search) {
@@ -48,6 +55,18 @@ public class DashboardController {
         model.addAttribute("note", note);
 
         return "/dashboard/ticket";
+    }
+
+    @GetMapping("/ticket/create")
+    public String getTask(Model model, Principal principal) {
+        Ticket ticket = new Ticket();
+        Optional<User> user = userRepository.findByUsername(principal.getName());
+        // DA INSERIRE IL MODELLO LIST PER RECUPERARE TUTTI GLI OPERATORI
+        ticket.setUser(user.get());
+        ticket.setState(0);
+        model.addAttribute("ticket", ticket);
+
+        return "/dashboard/createTicket";
     }
 
 }
