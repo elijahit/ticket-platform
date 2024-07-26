@@ -9,17 +9,24 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import it.elijah.ticket.model.Note;
+import it.elijah.ticket.model.Roles;
 import it.elijah.ticket.model.Ticket;
 import it.elijah.ticket.model.User;
 import it.elijah.ticket.repository.CategoryRepository;
+import it.elijah.ticket.repository.RolesRepository;
 import it.elijah.ticket.repository.TicketRepository;
 import it.elijah.ticket.repository.UserRepository;
+import jakarta.validation.Valid;
+
 
 @Controller
 @RequestMapping("/dashboard")
@@ -34,16 +41,35 @@ public class DashboardController {
     @Autowired
     CategoryRepository categoryRepository;
 
+    @Autowired
+    RolesRepository rolesRepository;
+
     @GetMapping()
-    public String getIndex(Model model, @RequestParam(name = "search", required = false) String search) {
+    public String getIndex(Model model, @RequestParam(name = "search", required = false) String search, Principal principal) {
 
         List<Ticket> ticket = new ArrayList<>();
 
-        if (search == null || search.isBlank()) {
-            ticket = ticketRepository.findAll();
-        } else {
-            ticket = ticketRepository.findByTitleIgnoreCase(search);
+        // GESTISCO IL PERMESSO DI VISUALIZZARE DETERMINATI TICKET
+        // Se uno è Admin li visualizza tutti, se sei operatore visualizzi solo i tuoi
+        Optional<User> user = userRepository.findByUsername(principal.getName());
+        Roles adminRole = rolesRepository.findByName("ADMIN").get();
+        Roles operatorRole = rolesRepository.findByName("OPERATORE").get();
+
+        if(user.get().getRoles().contains(adminRole)) {
+            if (search == null || search.isBlank()) {
+                ticket = ticketRepository.findAll();
+            } else {
+                ticket = ticketRepository.findByTitleIgnoreCase(search);
+            }
+        } else if(user.get().getRoles().contains(operatorRole)) {
+            if (search == null || search.isBlank()) {
+                ticket = ticketRepository.getTicketById(user.get());
+            } else {
+                ticket = ticketRepository.getTicketById(user.get(), search);
+            }
         }
+
+        ///////////////////////////////////////////////////////////////
 
         model.addAttribute("ticket", ticket);
 
@@ -62,7 +88,7 @@ public class DashboardController {
     }
 
     @GetMapping("/ticket/create")
-    public String getTask(Model model, Principal principal) {
+    public String createTask(Model model, Principal principal) {
         Ticket ticket = new Ticket();
         Optional<User> user = userRepository.findByUsername(principal.getName());
         model.addAttribute("allOperators", userRepository.findAll());
@@ -73,5 +99,17 @@ public class DashboardController {
 
         return "/dashboard/createTicket";
     }
+
+    @PostMapping("/ticket/create")
+    public String createTaskPost(@Valid @ModelAttribute("ticket") Ticket ticket, BindingResult bindingResult, Model model) {
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("allOperators", userRepository.findAll());
+            model.addAttribute("categories", categoryRepository.findAll());
+            return "/dashboard/createTicket";
+        }
+        ticketRepository.save(ticket);
+        return "redirect:/dashboard";
+    }
+    
 
 }

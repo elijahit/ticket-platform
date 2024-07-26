@@ -18,7 +18,7 @@ public class SecurityConfiguration {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-                .requestMatchers("/dashboard", "/dashboard/**").hasAnyAuthority("ADMIN")
+                .requestMatchers("/dashboard", "/dashboard/**").hasAnyAuthority("ADMIN", "OPERATORE")
                 .anyRequest().permitAll()
                 ).formLogin(withDefaults()).logout(withDefaults()).csrf(csrf -> csrf.disable());
         return http.build();

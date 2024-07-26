@@ -1,5 +1,7 @@
 package it.elijah.ticket.model;
 
+import java.util.Objects;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,4 +36,21 @@ public class Roles {
   public void setName(String name) {
     this.name = name;
   }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result;
+    return result;
+}
+
+  @Override
+   public boolean equals(Object obj) {
+      if(!(obj instanceof Roles)) {
+         return false;
+      }
+      Roles role = (Roles)obj;
+      return Objects.equals(this.id, role.getId()) && this.name.equals(role.getName());
+   }
 }

@@ -12,8 +12,15 @@
 </head>
 
 <body>
+  <div th:replace="~{fragments/header :: header()}"></div>
   <div class="container">
     <form th:actions="@{|/dashboard/ticket/create|}" th:object="${ticket}" method="POST">
+      <th:block th:if="${#fields.hasAnyErrors()}">
+        <ul>
+          <li th:each="err : ${#fields.allErrors()}" th:text="${err}" class="text-danger">
+          </li>
+        </ul>
+      </th:block>
       <div class="mb-3">
         <label for="ticketTitle" class="form-label">Titolo Ticket</label>
         <input type="text" class="form-control" id="ticketTitle" aria-describedby="ticketTitleHelp" th:field="*{title}">
@@ -35,7 +42,7 @@
       <label class="form-label">Seleziona le categorie</label>
       <div class="d-flex gap-3">
         <div th:each="c : ${categories}">
-          <input type="checkbox" th:id="${c.id}" th:value="${c}" />
+          <input type="checkbox" th:id="${c.id}" th:value="${c.id}" th:field="*{category}" />
           <label th:text="${c.category}" th:for="${c.id}"></label>
         </div>
       </div>

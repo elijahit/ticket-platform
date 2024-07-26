@@ -14,6 +14,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
@@ -24,11 +25,11 @@ public class Ticket {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id; 
 
-  @NotBlank
+  @NotBlank(message="Devi compilare il compilare il campo titolo")
   @Column(name="title", nullable=false)
   private String title;
 
-  @NotBlank
+  @NotBlank(message="Devi compilare il compilare il campo contenuto")
   @Column(name="text", nullable=false)
   private String text;
 
@@ -38,6 +39,7 @@ public class Ticket {
 
   private Boolean deleted;
 
+  @NotNull(message="Devi selezionare un operatore")
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name="user_id", nullable=false)
   private User user;
@@ -46,6 +48,7 @@ public class Ticket {
   @JoinColumn(name="ticket_id", nullable=false, insertable=false, updatable=false)
   private List<Note> note;
 
+  @NotEmpty(message="Devi selezionare almeno una categoria")
   @ManyToMany(fetch = FetchType.EAGER)
   private List<Category> category;
 
