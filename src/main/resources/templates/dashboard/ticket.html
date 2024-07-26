@@ -13,30 +13,104 @@
 <body>
   <div th:replace="~{fragments/header :: header()}"></div>
   <div class="container">
-    <h1 class="fs-3 text-center" th:text="${ticket.title}"></h1>
-    <p th:text="|${ticket.title} - ${ticket.text}|"></p>
-    <form class="mt-5 needs-validation" th:action="@{|/note/create|}" th:object="${note}" method="post">
-      <th:block th:if="${#fields.hasAnyErrors()}">
-        <ul>
-          <li th:each="err : ${#fields.allErrors()}" th:text="${err}" class="text-danger">
-          </li>
-        </ul>
-      </th:block>
-      <div class="form-floating">
-        <textarea th:field="*{text}" class="form-control mb-4" placeholder="Leave a comment here" id="text" style="height: 100px"></textarea>
-        <label for="text">Note</label>
+    <div class="row">
+      <div class="col-12">
+        <h1 class="fs-3 text-center" th:text="${ticket.title}"></h1>
+        <p th:text="|${ticket.text}|"></p>
       </div>
-      <input type="hidden" th:field="*{ticket}" id="ticket">
-      <input type="hidden" th:field="*{createdAt}" id="createdAt">
-      <button type="submit" class="btn btn-primary">Aggiungi nota</button>
-    </form>
-    <th:block th:if="${ticket.note.size() > 0}">
-      <div class="d-flex gap-3" th:each="n : ${ticket.note}">
-        <p th:text="${n.text}"></p>
-        <p th:text="${n.user.getUsername()}"></p>
-        <p th:text="${#temporals.format(n.createdAt, 'dd-MM-yyyy')}"></p>
+      <div class="col-8">
+        <div class="row">
+          <div class="col-6">
+            <form class="mt-5 needs-validation" th:action="@{|/note/create|}" th:object="${note}" method="post">
+              <th:block th:if="${#fields.hasAnyErrors()}">
+                <ul>
+                  <li th:each="err : ${#fields.allErrors()}" th:text="${err}" class="text-danger">
+                  </li>
+                </ul>
+              </th:block>
+              <div class="form-floating">
+                <textarea th:field="*{text}" class="form-control mb-4" placeholder="Leave a comment here" id="text" style="height: 100px"></textarea>
+                <label for="text">Note</label>
+              </div>
+              <input type="hidden" th:field="*{ticket}" id="ticket">
+              <input type="hidden" th:field="*{createdAt}" id="createdAt">
+              <button type="submit" class="btn btn-primary">Aggiungi nota</button>
+            </form>
+          </div>
+          <div class="col-6">
+            <form sec:authorize="hasAuthority('ADMIN')" class="mt-5 needs-validation" th:action="@{|/dashboard/ticket/edit/${ticket.id}|}" th:object="${ticket}" method="post">
+              <th:block th:if="${#fields.hasAnyErrors()}">
+                <ul>
+                  <li th:each="err : ${#fields.allErrors()}" th:text="${err}" class="text-danger">
+                  </li>
+                </ul>
+              </th:block>
+              <div class="mb-3">
+                <label for="title" class="form-label">Titolo</label>
+                <input th:field="*{title}" type="text" class="form-control" id="title" placeholder="Modifica il titolo">
+              </div>
+              <input type="hidden" th:field="*{id}">
+              <input type="hidden" th:field="*{category}">
+              <input type="hidden" th:field="*{user}">
+              <input type="hidden" th:field="*{state}">
+              <input type="hidden" th:field="*{text}">
+              <input type="hidden" th:field="*{note}">
+              <button type="submit" class="btn btn-primary">Modifica titolo</button>
+            </form>
+            <form sec:authorize="hasAuthority('ADMIN')" class="mt-5 needs-validation" th:action="@{|/dashboard/ticket/edit/${ticket.id}|}" th:object="${ticket}" method="post">
+              <th:block th:if="${#fields.hasAnyErrors()}">
+                <ul>
+                  <li th:each="err : ${#fields.allErrors()}" th:text="${err}" class="text-danger">
+                  </li>
+                </ul>
+              </th:block>
+              <div class="mb-3">
+                <label for="content" class="form-label">Contenuto</label>
+                <textarea th:field="*{text}" class="form-control mb-4" placeholder="Scrivi il contenuto della task" id="text" style="height: 100px"></textarea>
+              </div>
+              <input type="hidden" th:field="*{id}">
+              <input type="hidden" th:field="*{category}">
+              <input type="hidden" th:field="*{user}">
+              <input type="hidden" th:field="*{state}">
+              <input type="hidden" th:field="*{title}">
+              <input type="hidden" th:field="*{note}">
+              <button type="submit" class="btn btn-primary">Modifica il contenuto</button>
+            </form>
+            <form sec:authorize="hasAnyAuthority('ADMIN', 'OPERATORE')" class="mt-5 needs-validation" th:action="@{|/dashboard/ticket/edit/${ticket.id}|}" th:object="${ticket}" method="post">
+              <th:block th:if="${#fields.hasAnyErrors()}">
+                <ul>
+                  <li th:each="err : ${#fields.allErrors()}" th:text="${err}" class="text-danger">
+                  </li>
+                </ul>
+              </th:block>
+              <div class="mb-3">
+                <select th:field="*{state}" class="form-select" multiple aria-label="Multiple select example">
+                  <option th:value="0">Da fare</option>
+                  <option th:value="1">In corso</option>
+                  <option th:value="2">Completato</option>
+                </select>
+              </div>
+              <input type="hidden" th:field="*{id}">
+              <input type="hidden" th:field="*{category}">
+              <input type="hidden" th:field="*{user}">
+              <input type="hidden" th:field="*{text}">
+              <input type="hidden" th:field="*{title}">
+              <input type="hidden" th:field="*{note}">
+              <button type="submit" class="btn btn-primary">Modifica lo stato</button>
+            </form>
+          </div>
+        </div>
       </div>
-    </th:block>
+      <div class="col-4">
+        <th:block th:if="${ticket.note.size() > 0}">
+          <div class="d-flex gap-3" th:each="n : ${ticket.note}">
+            <p th:text="${n.text}"></p>
+            <p th:text="${n.user.getUsername()}"></p>
+            <p th:text="${#temporals.format(n.createdAt, 'dd-MM-yyyy')}"></p>
+          </div>
+        </th:block>
+      </div>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

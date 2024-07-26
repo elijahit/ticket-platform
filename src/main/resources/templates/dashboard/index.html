@@ -54,6 +54,11 @@
                 <li>
                   <a th:href="@{|/dashboard/ticket/${e.id}|}" class="btn btn-secondary" title="Visualizza task"><i class="bi bi-eye-fill"></i></a>
                 </li>
+                <li sec:authorize="hasAuthority('ADMIN')">
+                  <form th:action="@{|/dashboard/ticket/delete/${e.id}|}" method="post">
+                    <button class="btn btn-danger" title="Elimina"><i class="bi bi-trash"></i></button>
+                  </form>
+                </li>
               </ul>
             </td>
           </tr>

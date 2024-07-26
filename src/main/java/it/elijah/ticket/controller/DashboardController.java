@@ -29,7 +29,7 @@ import it.elijah.ticket.repository.UserRepository;
 import jakarta.validation.Valid;
 
 @Controller
-@RequestMapping("/dashboard")
+@RequestMapping("/")
 public class DashboardController {
 
     @Autowired
@@ -45,6 +45,12 @@ public class DashboardController {
     RolesRepository rolesRepository;
 
     @GetMapping()
+    public String getDashboard() {
+        return "redirect:/dashboard";
+    }
+    
+
+    @GetMapping("dashboard")
     public String getIndex(Model model, @RequestParam(name = "search", required = false) String search, Principal principal) {
 
         List<Ticket> ticket = new ArrayList<>();
@@ -76,7 +82,7 @@ public class DashboardController {
         return "/dashboard/index";
     }
 
-    @GetMapping("/ticket/{id}")
+    @GetMapping("dashboard/ticket/{id}")
     public String getTask(@PathVariable("id") Integer id, Model model, Principal principal) {
 
         Ticket ticket = ticketRepository.findById(id).get();
@@ -106,7 +112,7 @@ public class DashboardController {
     ///////////////////////////////////////////////////////////////
     }
 
-    @GetMapping("/ticket/create")
+    @GetMapping("dashboard/ticket/create")
     public String createTask(Model model, Principal principal) {
         Ticket ticket = new Ticket();
         Optional<User> user = userRepository.findByUsername(principal.getName());
@@ -119,7 +125,7 @@ public class DashboardController {
         return "/dashboard/createTicket";
     }
 
-    @PostMapping("/ticket/create")
+    @PostMapping("dashboard/ticket/create")
     public String createTaskPost(@Valid @ModelAttribute("ticket") Ticket ticket, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("allOperators", userRepository.findAll());
@@ -128,6 +134,31 @@ public class DashboardController {
         }
         ticketRepository.save(ticket);
         return "redirect:/dashboard";
+    }
+
+    @PostMapping("dashboard/ticket/delete/{id}")
+    public String deleteTask(@PathVariable("id") Integer id) {
+        
+        ticketRepository.delete(ticketRepository.findById(id).get());
+
+        return "redirect:/dashboard";
+    }
+
+    @PostMapping("dashboard/ticket/edit/{id}")
+    public String editTask(@Valid @ModelAttribute("ticket") Ticket ticket, BindingResult bindingResult, Model model, @PathVariable("id") Integer id) {
+
+        Note note = new Note();
+        model.addAttribute("ticket", ticketRepository.findById(id).get());
+        note.setTicket(ticketRepository.findById(id).get());
+        note.setCreatedAt(LocalDate.now());
+        model.addAttribute("note", note);
+
+        if (bindingResult.hasErrors()) {
+            return "/dashboard/ticket";
+        }
+
+        ticketRepository.save(ticket);
+        return "redirect:/dashboard/ticket/"+id;
     }
 
 }
