@@ -35,6 +35,7 @@
             <th scope="col">#</th>
             <th scope="col">Titolo</th>
             <th scope="col">Operatore</th>
+            <th scope="col">Stato</th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -43,6 +44,11 @@
             <th class="align-middle" scope="row" th:text="${e.id}"></th>
             <td class="align-middle" th:text="${e.title}"></td>
             <td class="align-middle" th:text="${e.user.username}"></td>
+              <td class="align-middle">
+                <span th:if="${e.state == 0}" class="badge text-bg-danger">Da fare</span>
+                <span th:if="${e.state == 1}" class="badge text-bg-primary">In corso</span>
+                <span th:if="${e.state == 2}" class="badge text-bg-success">Completato</span>
+              </td>
             <td>
               <ul class="list-unstyled gap-2 d-flex justify-content-end m-0">
                 <li>
