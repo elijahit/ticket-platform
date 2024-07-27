@@ -37,7 +37,7 @@ public class Ticket {
   @Column(name="state", nullable=false)
   private Integer state;
 
-  private Boolean deleted;
+  private Boolean deleted = false;
 
   @NotNull(message="Devi selezionare un operatore")
   @ManyToOne(fetch = FetchType.EAGER)

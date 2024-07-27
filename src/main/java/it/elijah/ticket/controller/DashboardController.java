@@ -63,7 +63,7 @@ public class DashboardController {
 
         if (user.get().getRoles().contains(adminRole)) {
             if (search == null || search.isBlank()) {
-                ticket = ticketRepository.findAll();
+                ticket = ticketRepository.findAllByDeleted();
             } else {
                 ticket = ticketRepository.findByTitleIgnoreCase(search);
             }
@@ -138,8 +138,10 @@ public class DashboardController {
 
     @PostMapping("dashboard/ticket/delete/{id}")
     public String deleteTask(@PathVariable("id") Integer id) {
-        
-        ticketRepository.delete(ticketRepository.findById(id).get());
+        Ticket ticket = ticketRepository.findById(id).get();
+        ticket.setDeleted(true);
+
+        ticketRepository.save(ticket);
 
         return "redirect:/dashboard";
     }
