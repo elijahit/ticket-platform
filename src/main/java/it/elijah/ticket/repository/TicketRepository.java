@@ -32,4 +32,13 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
             + "and u.deleted = false"
     )
     List<Ticket> getTicketById(@Param("user") User user, @Param("title") String title);
+
+    @Query(
+            "select u "
+            + "from Ticket u "
+            + "where u.user = :user "
+            + "and u.deleted = false "
+            + "and u.state BETWEEN 0 AND 1"
+    )
+    List<Ticket> getTicketByIdAndStatus(@Param("user") User user);
 }

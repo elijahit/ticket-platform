@@ -2,7 +2,7 @@
 <html xmlns:th='http://www.thymeleaf.org'>
 
 <head>
-  <title>Dashboard Admin</title>
+  <title>Dashboard</title>
   <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
 
 
@@ -13,6 +13,23 @@
 <body>
   <div th:replace="~{fragments/header :: header()}"></div>
   <div class="container">
+    <div class="row">
+      <div class="col-6 mt-5">
+        <ul class="list-unstyled">
+          <li><span class="fw-bold">Nome:</span> <span th:text="${user.username}"></span></li>
+          <li><span class="fw-bold">Email:</span> <span th:text="${user.email}"></span></li>
+          <li><span class="fw-bold">Ruolo:</span> <span th:each="e : ${user.roles}"><span th:text="|${e.name} |"></span></span></li>
+          <li><span class="fw-bold">Stato:</span> <span th:text="${user.active == false ? 'Non attivo' : 'Attivo'}"></span> <a th:class="${user.active == false ? 'btn btn-success bi bi-power' : 'btn btn-danger bi bi-power'}" style="font-size: 10px; padding: 5px;"  th:href="${user.active == false ? '/dashboard?status=false' : '/dashboard?status=true'}"></a>
+            <th:block th:if="${statusError == true}">
+                <p class="text-danger">
+                  Non puoi modificare il tuo stato di attività senza prima aver concluso tutte le tue task.
+                </p>
+              </th:block>
+          </li>
+          <li class="ps-5 pt-2"><a class="btn btn-danger" style="font-size: 15px; padding: 5px;"  href="/logout">Logout</a></li>
+        </ul>
+      </div>
+    </div>
     <div class="row">
       <div class="col-9"></div>
       <div class="col-3">

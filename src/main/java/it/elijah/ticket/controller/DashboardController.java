@@ -48,10 +48,9 @@ public class DashboardController {
     public String getDashboard() {
         return "redirect:/dashboard";
     }
-    
 
     @GetMapping("dashboard")
-    public String getIndex(Model model, @RequestParam(name = "search", required = false) String search, Principal principal) {
+    public String getIndex(Model model, @RequestParam(name = "search", required = false) String search, @RequestParam(name = "status", required = false) Boolean status, Principal principal) {
 
         List<Ticket> ticket = new ArrayList<>();
 
@@ -60,6 +59,18 @@ public class DashboardController {
         Optional<User> user = userRepository.findByUsername(principal.getName());
         Roles adminRole = rolesRepository.findByName("ADMIN").get();
         Roles operatorRole = rolesRepository.findByName("OPERATORE").get();
+        model.addAttribute("user", user.get());
+        if (status != null && status == true) {
+            if (ticketRepository.getTicketByIdAndStatus(user.get()).isEmpty()) {
+                user.get().setActive(false);
+                userRepository.save(user.get());
+            } else {
+                model.addAttribute("statusError", true);
+            }
+        } else if (status != null && status == false) {
+            user.get().setActive(true);
+            userRepository.save(user.get());
+        }
 
         if (user.get().getRoles().contains(adminRole)) {
             if (search == null || search.isBlank()) {
@@ -97,17 +108,19 @@ public class DashboardController {
         Optional<User> user = userRepository.findByUsername(principal.getName());
         Roles adminRole = rolesRepository.findByName("ADMIN").get();
         Roles operatorRole = rolesRepository.findByName("OPERATORE").get();
-        
+
         if (user.get().getRoles().contains(adminRole)) {
             return "/dashboard/ticket";
 
         } else if (user.get().getRoles().contains(operatorRole)) {
-            if(Objects.equals(ticket.getUser().getId(), user.get().getId())) {
+            if (Objects.equals(ticket.getUser().getId(), user.get().getId())) {
                 return "/dashboard/ticket";
             }
         }
 
         return "redirect:/dashboard";
+
+    
 
     ///////////////////////////////////////////////////////////////
     }
@@ -160,7 +173,7 @@ public class DashboardController {
         }
 
         ticketRepository.save(ticket);
-        return "redirect:/dashboard/ticket/"+id;
+        return "redirect:/dashboard/ticket/" + id;
     }
 
 }

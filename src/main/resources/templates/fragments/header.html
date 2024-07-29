@@ -14,6 +14,9 @@
 					<li class="nav-item">
 						<a sec:authorize="hasAuthority('ADMIN')" class="nav-link active" aria-current="page" href="/dashboard/ticket/create">Crea nuova task</a>
 					</li>
+					<li class="nav-item">
+						<span sec:authorize="isAuthenticated()" class="nav-link active bi bi-person" th:text="| ${#authentication.getPrincipal().getUsername()}|"></span>
+					</li>
 				</ul>
 			</div>
 		</div>
