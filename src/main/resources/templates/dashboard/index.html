@@ -29,6 +29,26 @@
           <li class="ps-5 pt-2"><a class="btn btn-danger" style="font-size: 15px; padding: 5px;"  href="/logout">Logout</a></li>
         </ul>
       </div>
+      <div class="col-6">
+        <form sec:authorize="isAuthenticated()" class="mt-5 needs-validation" th:action="@{|/dashboard/user/edit|}" th:object="${user}" method="post">
+          <th:block th:if="${#fields.hasAnyErrors()}">
+            <ul>
+              <li th:each="err : ${#fields.allErrors()}" th:text="${err}" class="text-danger">
+              </li>
+            </ul>
+          </th:block>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input th:field="*{email}" type="text" class="form-control" id="title" placeholder="Modifica la tua email">
+          </div>
+          <input type="hidden" th:field="*{id}">
+          <input type="hidden" th:field="*{roles}">
+          <input type="hidden" th:field="*{username}">
+          <input type="hidden" th:field="*{password}">
+          <input type="hidden" th:field="*{active}">
+          <button type="submit" class="btn btn-primary">Modifica email</button>
+        </form>
+      </div>
     </div>
     <div class="row">
       <div class="col-9"></div>

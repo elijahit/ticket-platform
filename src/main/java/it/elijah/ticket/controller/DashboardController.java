@@ -176,4 +176,36 @@ public class DashboardController {
         return "redirect:/dashboard/ticket/" + id;
     }
 
+    @PostMapping("dashboard/user/edit")
+    public String editUser(@Valid @ModelAttribute("user") User user, BindingResult bindingResult, Model model) {
+
+        List<Ticket> ticket = new ArrayList<>();
+
+        // GESTISCO IL PERMESSO DI VISUALIZZARE DETERMINATI TICKET
+        // Se uno è Admin li visualizza tutti, se sei operatore visualizzi solo i tuoi
+        Roles adminRole = rolesRepository.findByName("ADMIN").get();
+        Roles operatorRole = rolesRepository.findByName("OPERATORE").get();
+        model.addAttribute("user", user);
+        
+        if (user.getRoles().contains(adminRole)) {
+            ticket = ticketRepository.findAllByDeleted();
+        } else if (user.getRoles().contains(operatorRole)) {
+            ticket = ticketRepository.getTicketById(user);
+        }
+        
+        ///////////////////////////////////////////////////////////////
+        
+        model.addAttribute("ticket", ticket);
+        
+        
+        if (bindingResult.hasErrors()) {
+            user = userRepository.findById(user.getId()).get();
+            model.addAttribute("user", user);
+            return "/dashboard/index";
+        }
+
+        userRepository.save(user);
+        return "redirect:/";
+    }
+
 }

@@ -26,7 +26,7 @@ public class User {
   @Column(name="password", nullable=false)
   private String password;
 
-  @NotBlank
+  @NotBlank(message="L''email è obbligatoria.")
   @Column(name="email", nullable=false)
   private String email;
 
