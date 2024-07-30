@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import it.elijah.ticket.model.Ticket;
 import it.elijah.ticket.model.User;
+import it.elijah.ticket.projections.TicketApi;
 
 public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 
@@ -16,6 +17,15 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 
     @Query("SELECT p FROM Ticket p WHERE p.deleted = false")
     public List<Ticket> findAllByDeleted();
+
+    @Query("SELECT p FROM Ticket p WHERE p.deleted = false")
+    public List<TicketApi> findAllByDeletedApi();
+
+    @Query("SELECT p FROM Ticket p JOIN p.category c WHERE p.deleted = false AND c.category like %:category%")
+    public List<TicketApi> findAllByDeletedApiCategory(@Param("category") String category);
+    
+    @Query("SELECT p FROM Ticket p WHERE p.deleted = false AND p.state = :state")
+    public List<TicketApi> findAllByDeletedApiState(@Param("state") Integer category);
 
     @Query(
             "select u "
