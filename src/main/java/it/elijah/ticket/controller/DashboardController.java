@@ -129,7 +129,7 @@ public class DashboardController {
     public String createTask(Model model, Principal principal) {
         Ticket ticket = new Ticket();
         Optional<User> user = userRepository.findByUsername(principal.getName());
-        model.addAttribute("allOperators", userRepository.findAll());
+        model.addAttribute("allOperators", userRepository.findAllByActive());
         model.addAttribute("categories", categoryRepository.findAll());
         ticket.setUser(user.get());
         ticket.setState(0);
